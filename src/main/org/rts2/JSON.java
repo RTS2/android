@@ -179,7 +179,7 @@ public class JSON
 	/**
 	 * Return RA DEC pair.
 	 */
-	public RADec getValueRaDec(String device, String value) throws Exception
+	public RADec getValueRADec(String device, String value) throws Exception
 	{
 		JSONObject json = get(device).getJSONObject("d").getJSONObject(value);
 		return new RADec(Double.parseDouble(json.get("ra").toString()), Double.parseDouble(json.get("dec").toString()));

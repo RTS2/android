@@ -11,7 +11,7 @@
         android:icon="@drawable/rts2_launcher"
         android:label="@string/app_name" android:description="@string/description">
         <activity
-            android:name="RTS2Activity"
+            android:name="TelescopeActivity"
             android:description="@string/description" android:icon="@drawable/rts2_launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

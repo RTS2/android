@@ -8,17 +8,18 @@ import android.util.Log;
 import android.widget.TextView;
 
 import org.rts2.JSON;
+import org.libnova.RADec;
 
-class RetreiveRaDecTask extends AsyncTask<TextView, Void, String> {
+class RetreiveRaDecTask extends AsyncTask<TextView, Void, RADec> {
     private Exception exception;
 
     private TextView allViews[];
 
-    protected String doInBackground(TextView... views) {
+    protected RADec doInBackground(TextView... views) {
         try {
             JSON json = new JSON ("http://b3.rts2.org/andor", "petr", "test");
 	    allViews = views;
-	    return json.getValue("T0", "infotime");
+	    return json.getValueRADec("T0", "TEL");
         } catch (Exception e) {
             Log.e("doInBackground", "error while retrieving", e);
 	    this.exception = e;
@@ -26,11 +27,11 @@ class RetreiveRaDecTask extends AsyncTask<TextView, Void, String> {
 	return null;
     }
 
-    protected void onPostExecute(String val) {
-        Log.e("onPostExecute", "running");
+    protected void onPostExecute(RADec val) {
         try
 	{
-       	    allViews[0].setText("RA " + val);
+       	    allViews[0].setText("RA " + val.getRA().toString());
+       	    allViews[1].setText("Dec " + val.getDec().toString());
 	} catch (Exception e) {
 	    Log.e("onPostExecute", "error ", e);
 	}
@@ -38,7 +39,7 @@ class RetreiveRaDecTask extends AsyncTask<TextView, Void, String> {
     }
 }
 
-public class RTS2Activity extends Activity {
+public class TelescopeActivity extends Activity {
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
