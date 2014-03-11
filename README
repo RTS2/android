@@ -1,0 +1,15 @@
+This is a sample application for Android, showing access to RTS2 values.
+
+Intend is to extend this with the full personalization through Preferences, etc.
+
+To compile:
+
+mvn clean install android:redeploy
+
+To run some tests:
+
+mvn test
+
+You will need Maven (sudo apt-get install maven) and Android SDK with Default emulator host (or add new using android avd).
+
+Petr Kubánek <petr@kubanek.net>
