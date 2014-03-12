@@ -44,7 +44,7 @@ public class LibnovaTest extends TestCase
 	public void testRA2() throws Exception
 	{
 		RA ra = new RA(21.1234678);
-		assertEquals("RA 21.1234678 == 01:24:29.632 in HSM", "01:24:29.632", ra.toString());
+		assertEquals("RA 21.1234678 == 01:24:29.632 in HMS", "01:24:29.632", ra.toString());
 	}
 
 	/**
@@ -53,18 +53,27 @@ public class LibnovaTest extends TestCase
 	public void testDec1() throws Exception
 	{
 		Dec dec = new Dec(15.0);
-		assertEquals("Declination 15.0 == +15:00:00.00 in HMS", "+15:00:00.00", dec.toString());
+		assertEquals("Declination 15.0 == +15:00:00.00 in DMS", "+15:00:00.00", dec.toString());
 	}
 
 	public void testDec2() throws Exception
 	{
 		Dec dec = new Dec(-15.0);
-		assertEquals("Declination -15.0 == -15:00:00.00 in HMS", "-15:00:00.00", dec.toString());
+		assertEquals("Declination -15.0 == -15:00:00.00 in DMS", "-15:00:00.00", dec.toString());
 	}
 
 	public void testDec3() throws Exception
 	{
 		Dec dec = new Dec(-87.999999);
-		assertEquals("Declination -87.999999 == -88:00:00.00 in HMS", "-88:00:00.00", dec.toString());
+		assertEquals("Declination -87.999999 == -88:00:00.00 in DMS", "-88:00:00.00", dec.toString());
+	}
+
+	/**
+	 * Test RA Dec
+	 */
+	public void testRADec1() throws Exception
+	{
+		RADec raDec = new RADec(21.1234678, -87.999999);
+		assertEquals("RADec 21.1234678 -87.999999 == 01:24:29.632 -88:00:00.00", "01:24:29.632 -88:00:00.00", raDec.toString());
 	}
 }
