@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+	<PreferenceCategory
+		android:title="Server"
+		android:key="server">
+
+		<EditTextPreference
+			android:key="url"
+			android:title="Server URL"
+			android:summary="URL to RTS2 XMLRPCD host. Can contain port number and path prefix"
+			android:dialogTitle="Server URL"
+			android:dialogMessage="Provide RTS2 server URL"
+			android:defaultValue="http://b2.rts2.org/" />
+
+		<EditTextPreference
+			android:key="username"
+			android:title="RTS2 username"
+			android:summary="RTS2 login, used to authentificate user"
+			android:dialogTitle="RTS2 username"
+			android:dialogMessage="Provide RTS2 username"
+			android:defaultValue="" />
+
+		<EditTextPreference
+			android:key="password"
+			android:title="RTS2 password"
+			android:summary="RTS2 password, used to authentificate user"
+			android:inputType="textPassword"
+			android:dialogTitle="RTS2 password"
+			android:dialogMessage="Provide RTS2 password"
+			android:defaultValue="" />
+
+	</PreferenceCategory>
+</PreferenceScreen>

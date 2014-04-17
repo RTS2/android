@@ -2,5 +2,6 @@
 <resources>
     <string name="app_name">a-RTS2</string>
     <string name="description">RTS2 client application.</string>
+    <string name="settings">Settings</string>
 
 </resources>
