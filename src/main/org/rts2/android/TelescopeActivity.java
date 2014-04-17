@@ -2,8 +2,10 @@ package org.rts2.android;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,9 +20,19 @@ class RetreiveRaDecTask extends AsyncTask<TextView, Void, RADec> {
 
     private TextView allViews[];
 
+    private String url;
+    private String username;
+    private String password;
+
+    public RetreiveRaDecTask(String url, String username, String password) {
+	this.url = url;
+	this.username = username;
+	this.password = password;
+    }
+
     protected RADec doInBackground(TextView... views) {
         try {
-            JSON json = new JSON ("http://b3.rts2.org/tel", "petr", "test");
+            JSON json = new JSON (url, username, password);
 	    allViews = views;
 	    return json.getValueRADec("T0", "TEL");
         } catch (Exception e) {
@@ -50,13 +62,17 @@ public class TelescopeActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        
-        final String HOST_NAME = "b3.rts2.org";
-        
+
+	refresh();
+    }
+
+    private void refresh() {
         TextView ra = (TextView)findViewById(R.id.RA);
         TextView dec = (TextView)findViewById(R.id.DEC);
 
-	new RetreiveRaDecTask().execute(ra, dec);
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+	new RetreiveRaDecTask(sharedPrefs.getString("url", "null"), sharedPrefs.getString("username", "null"), sharedPrefs.getString("password", "null")).execute(ra, dec);
     }
 
     @Override
@@ -74,6 +90,7 @@ public class TelescopeActivity extends Activity {
 	{
 	   case ITEM_SETTINGS:
 	      startActivity(new Intent(this, SettingsActivity.class));
+	      refresh();
 	      return true;
 	}
 	return false;
