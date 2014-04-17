@@ -54,7 +54,7 @@ class RetreiveRaDecTask extends AsyncTask<TextView, Void, RADec> {
     }
 }
 
-public class TelescopeActivity extends Activity {
+public class TelescopeActivity extends Activity implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final int ITEM_SETTINGS = 0;
 
     /** Called when the activity is first created. */
@@ -63,14 +63,20 @@ public class TelescopeActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-	refresh();
+	SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+	sharedPrefs.registerOnSharedPreferenceChangeListener(this);
+
+	refresh(sharedPrefs);
     }
 
-    private void refresh() {
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPrefs, String key) {
+        refresh(sharedPrefs);
+    }
+
+    private void refresh(SharedPreferences sharedPrefs) {
         TextView ra = (TextView)findViewById(R.id.RA);
         TextView dec = (TextView)findViewById(R.id.DEC);
-
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
 	new RetreiveRaDecTask(sharedPrefs.getString("url", "null"), sharedPrefs.getString("username", "null"), sharedPrefs.getString("password", "null")).execute(ra, dec);
     }
@@ -90,7 +96,6 @@ public class TelescopeActivity extends Activity {
 	{
 	   case ITEM_SETTINGS:
 	      startActivity(new Intent(this, SettingsActivity.class));
-	      refresh();
 	      return true;
 	}
 	return false;
