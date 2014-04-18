@@ -8,7 +8,9 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import android.net.Uri;
 import android.util.Log;
@@ -22,6 +24,7 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.CoreProtocolPNames;
 
 import org.json.JSONObject;
+import org.json.JSONArray;
 
 import org.libnova.RADec;
 
@@ -33,6 +36,32 @@ import org.libnova.RADec;
  */
 public class JSON
 {
+	public static final int DEVICE_TYPE_UNKNOW     = 0;
+	public static final int DEVICE_TYPE_SERVERD    = 1;
+	public static final int DEVICE_TYPE_MOUNT      = 2;
+	public static final int DEVICE_TYPE_CCD        = 3;
+	public static final int DEVICE_TYPE_DOME       = 4;
+	public static final int DEVICE_TYPE_WEATHER    = 5;
+	public static final int DEVICE_TYPE_ROTATOR    = 6;
+	public static final int DEVICE_TYPE_PHOT       = 7;
+	public static final int DEVICE_TYPE_PLAN       = 8;
+	public static final int DEVICE_TYPE_GRB        = 9;
+	public static final int DEVICE_TYPE_FOCUS     = 10;
+	public static final int DEVICE_TYPE_MIRROR    = 11;
+	public static final int DEVICE_TYPE_CUPOLA    = 12;
+	public static final int DEVICE_TYPE_FW        = 13;
+	public static final int DEVICE_TYPE_AUGERSH   = 14;
+	public static final int DEVICE_TYPE_SENSOR    = 15;
+	
+	public static final int DEVICE_TYPE_EXECUTOR  = 20;
+	public static final int DEVICE_TYPE_IMGPROC   = 21;
+	public static final int DEVICE_TYPE_SELECTOR  = 22;
+	public static final int DEVICE_TYPE_XMLRPC    = 23;
+	public static final int DEVICE_TYPE_INDI      = 24;
+	public static final int DEVICE_TYPE_LOGD      = 25;
+	public static final int DEVICE_TYPE_SCRIPTOR  = 26;
+	public static final int DEVICE_TYPE_BB        = 27;
+
 	/**
          * Construct connection to given URL.
          *
@@ -52,6 +81,8 @@ public class JSON
          */
         public JSON(String url, String login, String password) throws Exception
 	{
+		devicesArray = null;
+
 		client = new DefaultHttpClient();
 		client.getParams().setParameter(CoreProtocolPNames.USER_AGENT, "java-rts2");
 
@@ -79,21 +110,11 @@ public class JSON
 	}
 
 	/**
-	 * Return JSON object with device.
-	 *
-	 * @param device RTS2 device name
-	 *
-	 * @return JSONObject with device values (reply to get API call)
+	 * Return JSON object with the given URL.
 	 */
-	public JSONObject get(String device) throws Exception
+	public String getUrl(String url) throws Exception
 	{
-		Log.d("JSON", "get " + Uri.parse(baseUrl).buildUpon().appendEncodedPath("api/get").appendQueryParameter("d",device).build().toString());
-		HttpGet request = new HttpGet(Uri.parse(baseUrl).buildUpon().appendEncodedPath("api/get").appendQueryParameter("d",device).build().toString());
-	
-		BasicHttpParams httpParams = new BasicHttpParams();
-		httpParams.setParameter("device", device);
-
-		request.setParams(httpParams);
+		HttpGet request = new HttpGet(url);
 
 		HttpResponse response = client.execute(request);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()), 8);
@@ -105,10 +126,53 @@ public class JSON
 			sb.append(line + "\n");
 		}
 
-		Log.d("JSON", "getValue: " + sb.toString());
+		return sb.toString();
+	}
 
-		JSONObject json = new JSONObject(sb.toString());
-		return json;
+	/**
+	 * Return JSON object with device.
+	 *
+	 * @param device RTS2 device name
+	 *
+	 * @return JSONObject with device values (reply to get API call)
+	 */
+	public JSONObject get(String device) throws Exception
+	{
+		return new JSONObject(getUrl(Uri.parse(baseUrl).buildUpon().appendEncodedPath("api/get").appendQueryParameter("d",device).build().toString()));
+	}
+
+	/**
+	 * Refresh devicesArray.
+	 */
+	private void refreshDevices() throws Exception
+	{
+		devicesArray = new JSONArray(getUrl(Uri.parse(baseUrl).buildUpon().appendEncodedPath("api/devices").appendQueryParameter("e","1").build().toString()));
+	}
+
+	/**
+	 * Return name(s) of the connected devices.
+	 */
+	public String[] devices() throws Exception
+	{
+		if (devicesArray == null)
+			refreshDevices();
+		String[] ret = new String[devicesArray.length()];
+		for (int i=0; i < devicesArray.length(); i++)
+			ret[i] = devicesArray.getJSONArray(i).getString(0);
+		return ret;
+	}
+
+	public String[] devbytype(int type) throws Exception
+	{
+		if (devicesArray == null)
+			refreshDevices();
+		List<String> ret = new ArrayList();
+		for (int i=0; i < devicesArray.length(); i++)
+		{
+			if (devicesArray.getJSONArray(i).getInt(1) == type)
+				ret.add(devicesArray.getJSONArray(i).getString(0));
+		}
+		return ret.toArray(new String[0]);
 	}
 
 	/**
@@ -187,4 +251,5 @@ public class JSON
 
 	private DefaultHttpClient client;
 	private String baseUrl;
+	private JSONArray devicesArray;
 }

@@ -34,7 +34,9 @@ class RetreiveRaDecTask extends AsyncTask<TextView, Void, RADec> {
         try {
             JSON json = new JSON (url, username, password);
 	    allViews = views;
-	    return json.getValueRADec("T0", "TEL");
+	    String[] telescopes = json.devbytype(JSON.DEVICE_TYPE_MOUNT);
+	    if (telescopes.length > 0)
+	    	return json.getValueRADec(telescopes[0], "TEL");
         } catch (Exception e) {
             Log.e("doInBackground", "error while retrieving", e);
 	    this.exception = e;
