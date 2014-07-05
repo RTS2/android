@@ -38,6 +38,11 @@ public class ObservatoryActivity extends Activity {
 	TelescopeFragment telescope = new TelescopeFragment();
 	//fragmentTransaction.add(R.layout.main,telescope);
 	fragmentTransaction.commit();
+
+	SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+
+	TextView obs = (TextView)findViewById(R.id.Observatory);
+	obs.setText(sharedPref.getString("url","null"));
     }
 
     @Override

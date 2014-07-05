@@ -1,6 +1,8 @@
 package org.rts2.android;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -28,16 +30,32 @@ class RetreiveRaDecTask extends AsyncTask<TextView, Void, RADec> {
 
     private TextView allViews[];
 
+    private Context context;
+
     private String url;
     private String username;
     private String password;
+    
+    private ProgressDialog pd = null;
 
-    public RetreiveRaDecTask(String url, String username, String password) {
+    public RetreiveRaDecTask(Context context, String url, String username, String password) {
+        this.context = context;
 	this.url = url;
 	this.username = username;
 	this.password = password;
     }
 
+    @Override
+    protected void onPreExecute() {
+        pd = new ProgressDialog(context);
+	pd.setTitle("Processing..");
+	pd.setMessage("Please wait.");
+	pd.setCancelable(false);
+	pd.setIndeterminate(true);
+	pd.show();
+    }
+
+    @Override
     protected RADec doInBackground(TextView... views) {
         try {
             JSON json = new JSON (url, username, password);
@@ -59,7 +77,11 @@ class RetreiveRaDecTask extends AsyncTask<TextView, Void, RADec> {
 	{
        	    allViews[0].setText("RA " + val.getRA().toString());
        	    allViews[1].setText("Dec " + val.getDec().toString());
+	    if (pd!=null)
+	        pd.dismiss();
 	} catch (Exception e) {
+	    if (pd!=null)
+	        pd.dismiss();
 	    Log.e("onPostExecute", "error ", e);
 	}
 
@@ -108,6 +130,6 @@ public class TelescopeFragment extends Fragment implements SharedPreferences.OnS
         TextView ra = (TextView)getView().findViewById(R.id.RA);
         TextView dec = (TextView)getView().findViewById(R.id.DEC);
 
-	new RetreiveRaDecTask(sharedPrefs.getString("url", "null"), sharedPrefs.getString("username", "null"), sharedPrefs.getString("password", "null")).execute(ra, dec);
+	new RetreiveRaDecTask(getActivity(), sharedPrefs.getString("url", "null"), sharedPrefs.getString("username", "null"), sharedPrefs.getString("password", "null")).execute(ra, dec);
     }
 }
