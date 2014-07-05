@@ -10,7 +10,7 @@
 			android:title="Server URL"
 			android:dialogTitle="Server URL"
 			android:dialogMessage="Provide RTS2 server URL"
-			android:defaultValue="http://b2.rts2.org/" />
+			android:defaultValue="http://b2.rts2.org/tel" />
 
 		<EditTextPreference
 			android:key="username"

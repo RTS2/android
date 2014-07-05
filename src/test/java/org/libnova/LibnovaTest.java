@@ -8,6 +8,9 @@ import org.libnova.Dec;
 import org.libnova.RADec;
 import org.libnova.HMS;
 
+import org.libnova.Altitude;
+import org.libnova.Azimuth;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -75,5 +78,14 @@ public class LibnovaTest extends TestCase
 	{
 		RADec raDec = new RADec(21.1234678, -87.999999);
 		assertEquals("RADec 21.1234678 -87.999999 == 01:24:29.632 -88:00:00.00", "01:24:29.632 -88:00:00.00", raDec.toString());
+	}
+
+	/**
+	 * Test Alt
+	 */
+	public void testAlt1() throws Exception
+	{
+		Altitude alt = new Altitude(87.23);
+		assertEquals("Altitude 87.23 == +87:13:48.0", "87:13:48.000", alt.toString());
 	}
 }

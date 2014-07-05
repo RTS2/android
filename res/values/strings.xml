@@ -3,5 +3,8 @@
     <string name="app_name">a-RTS2</string>
     <string name="description">RTS2 client application.</string>
     <string name="settings">Settings</string>
+    <string name="off">Off</string>
+    <string name="standby">Standby</string>
+    <string name="on">On</string>
 
 </resources>

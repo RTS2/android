@@ -1,3 +1,6 @@
+/**
+ *
+ */
 package org.libnova;
 
 import java.text.DecimalFormat;
@@ -69,6 +72,9 @@ public class HMS {
 		return String.format("%c%s", sign ? '+' : '-', toString());
 	}
 
+	/**
+	 * Returns RA/DEC string representation of HMS with sign and selected separator.
+	 */
 	public String toStringWithSign(String secondsDecimalFormat)
 	{
 		return String.format("%c%s", sign ? '+' : '-', toString(secondsDecimalFormat));
