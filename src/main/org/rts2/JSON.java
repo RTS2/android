@@ -62,6 +62,11 @@ public class JSON
 	public static final int DEVICE_TYPE_SCRIPTOR  = 26;
 	public static final int DEVICE_TYPE_BB        = 27;
 
+	// centrald states
+	public static final int CENTRALD_STANDY       = 0x010;
+	public static final int CENTRALD_SOFT_OFF     = 0x020;
+	public static final int CENTRALD_HARD_OFF     = 0x030;
+
 	/**
          * Construct connection to given URL.
          *
@@ -173,6 +178,16 @@ public class JSON
 				ret.add(devicesArray.getJSONArray(i).getString(0));
 		}
 		return ret.toArray(new String[0]);
+	}
+
+	/**
+	 * Return device state.
+	 *
+	 * @param device RTS2 device name
+	 */
+	public long getState(String device) throws Exception
+	{
+		return Long.parseLong(get(device).get("state").toString());
 	}
 
 	/**

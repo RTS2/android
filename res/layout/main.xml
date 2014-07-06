@@ -9,10 +9,16 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"/>
 
+    <fragment android:name="org.rts2.android.OnOffFragment"
+      android:id="@+id/observatory"
+      android:layout_weight="1"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"/>
+
     <fragment android:name="org.rts2.android.TelescopeFragment"
       android:id="@+id/telescope"
       android:layout_weight="1"
       android:layout_width="match_parent"
-      android:layout_height="match_parent"/>
+      android:layout_height="wrap_content"/>
 
 </LinearLayout>

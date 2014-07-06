@@ -4,22 +4,29 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/off"
-        android:layout_width="wrap_content"
+    <RadioGroup
+        android:id="@+id/observatory_group"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/off"/>
-    
-    <TextView
-        android:id="@+id/standby"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/standby"/>
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/standby"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/on"/>
+        <RadioButton
+            android:id="@+id/off"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/off"/>
+    
+        <RadioButton
+            android:id="@+id/standby"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/standby"/>
+
+        <RadioButton
+            android:id="@+id/on"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/on"/>
+    </RadioGroup>
 
 </LinearLayout>
