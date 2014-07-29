@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,8 +19,18 @@ import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.rts2.JSON;
 import org.libnova.RADec;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Callback class for retrieving of JSON data.
@@ -89,6 +100,32 @@ class RetreiveOnOffState extends AsyncTask<RadioGroup, Void, Long> {
     }
 }
 
+class SetOnOffState extends AsyncTask<String, Void, Integer> {
+
+	@Override
+	protected Integer doInBackground(String... params) {
+		String url = params[0];
+		String username = params[1];
+		String password = params[2];
+		String command = params[3];
+
+		HttpClient client = new DefaultHttpClient();
+		HttpResponse response;
+		HttpGet onOffRequest = new HttpGet(url + "/switchstate/" + command);
+		onOffRequest.addHeader("Authorization", "Basic " +
+				Base64.encodeToString((username + ":" + password).getBytes(), Base64.DEFAULT));
+		try {
+			response = client.execute(onOffRequest);
+			Log.i("Switch state response:", response.getStatusLine().toString());
+			return response.getStatusLine().getStatusCode();
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+}
 
 /**
  * Telescope activity display.
@@ -112,12 +149,42 @@ public class OnOffFragment extends Fragment implements SharedPreferences.OnShare
 	return view;
     }
 
-    @Override
-    public void onStart() {
-    	super.onStart();
+	@Override
+	public void onStart() {
+		super.onStart();
 
-	SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-	sharedPrefs.registerOnSharedPreferenceChangeListener(this);
+		final SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+		sharedPrefs.registerOnSharedPreferenceChangeListener(this);
+
+		RadioGroup onOffGroup = (RadioGroup) getView().findViewById(R.id.observatory_group);
+		onOffGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(RadioGroup group, int checkedId) {
+				String command = "off";
+				final String url = sharedPrefs.getString("url", "null");
+				final String username = sharedPrefs.getString("username", "null");
+				final String password = sharedPrefs.getString("password", "null");
+				switch (checkedId) {
+					case R.id.on:
+						command = "on";
+						break;
+					case R.id.off:
+						command = "off";
+						break;
+					case R.id.standby:
+						command = "standby";
+						break;
+				}
+
+				if (url == "null" || username == "null" || password == "null") {
+					return;
+				}
+
+				SetOnOffState task = new SetOnOffState();
+				task.execute(url, username, password, command);
+
+			}
+		});
 
     	refresh(sharedPrefs);
     }
